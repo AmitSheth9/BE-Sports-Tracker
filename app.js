@@ -114,7 +114,8 @@ app.post('/login',
    }), (req, res) => {
     const response = 'login success';
     console.log('responselogin', response)
-    res.send('succcess'); }
+    res.send('succcess');
+/*not able to either receive or print this message*/ }
     );
 
 
