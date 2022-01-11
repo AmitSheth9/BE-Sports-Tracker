@@ -81,6 +81,8 @@ app.use(function(req, res, next) {
     res.locals.currentUser = req.user;
     next();
 });
+app.use('/betform', require('./lib/controllers/betform'));
+
 app.post('/signup', async(req, res, next) => {
     console.log('test signup')
     bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
@@ -103,7 +105,7 @@ app.post('/signup', async(req, res, next) => {
         console.log('testuser', user);
         const response = 'signup success';
         console.log('responsesign', response)
-                res.send({status: response});
+                res.send(response);
         }
     } )
 })
@@ -114,7 +116,7 @@ app.post('/login',
    }), (req, res) => {
     const response = 'login success';
     console.log('responselogin', response)
-    res.send('succcess');
+    res.send(response);
 /*not able to either receive or print this message*/ }
     );
 
