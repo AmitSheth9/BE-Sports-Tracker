@@ -14,7 +14,6 @@ const Schema = mongoose.Schema;
 require('dotenv').config();
 
 const mongoDb = process.env.mdb
-console.log(process.env.mdb);
 mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
