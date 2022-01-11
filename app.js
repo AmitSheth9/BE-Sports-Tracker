@@ -23,7 +23,8 @@ const User = mongoose.model(
     "User",
     new Schema({
       username: { type: String, required: true },
-      password: { type: String, required: true }
+      password: { type: String, required: true },
+      signupDate: { type: Date, required: true }
     })
   );
 
@@ -94,7 +95,8 @@ app.post('/signup', async(req, res, next) => {
         else{
             const user = new User({ 
                 username: req.body.username,
-                password: hashedPassword
+                password: hashedPassword,
+                signupDate: req.body.date
             }).save(err => {
                 if(err) {
                     return next(err);
