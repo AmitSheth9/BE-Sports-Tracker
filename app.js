@@ -13,7 +13,7 @@ const Schema = mongoose.Schema;
 
 require('dotenv').config();
 
-const mongoDb = process.env.mdb
+const mongoDb = process.env.MDB;
 //env variable
 mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
