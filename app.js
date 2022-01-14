@@ -129,10 +129,9 @@ app.post('/login',
 /*not able to either receive or print this message*/ }
     );
 
+const PORT = process.env.PORT || 7890;
 
-
-
-app.listen(7890, () => console.log("app listening on port 7890!"));
+app.listen(PORT, () => console.log("app listening on port 7890!"));
 
 
 
