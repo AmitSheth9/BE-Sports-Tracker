@@ -90,6 +90,7 @@ app.use(function(req, res, next) {
     next();
 });
 app.use('/betform', require('./lib/controllers/betform'));
+app.use('/betdata', require ('./lib/controllers/betdata'))
 
 app.post('/signup', async(req, res, next) => {
     console.log('test signup')
