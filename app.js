@@ -14,7 +14,7 @@ const Schema = mongoose.Schema;
 require('dotenv').config();
 
 const mongoDb = process.env.MDB;
-//env variable
+
 mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
@@ -33,14 +33,14 @@ app.use(cors());
 app.use(bodyparser.urlencoded({extended:false}))
 app.use(bodyparser.json())
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }))
-app.use(function (req, res, next) {
+/*app.use(function (req, res, next) {
     //Enabling CORS
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization");
       next();
     });
-
+*/
 passport.use(
     new LocalStrategy((username, password, done) => {
         console.log('testlogin');
@@ -129,6 +129,30 @@ app.post('/login',
     res.send(response);
 /*not able to either receive or print this message*/ }
     );
+
+app.post('/change-password', async (req, res, next) => {
+    console.log('changePW', req.body.username, req.body.password)
+    bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
+        console.log(req.body);
+        if(err) {
+            console.log(err);
+            return next(err)
+        }
+        else{
+            console.log(hashedPassword)
+          User.findOneAndUpdate({ username: req.body.username}, {$set: {password: hashedPassword}}, function (err, user){
+
+            if (err) {
+              return err;
+            } 
+           
+            console.log('changepw after hash');
+            res.send('password updated');
+        });
+        
+        }
+    } )
+})
 
 const PORT = process.env.PORT || 7890;
 
