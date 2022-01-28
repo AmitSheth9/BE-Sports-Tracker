@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const bodyparser = require('body-parser')
-
+//var nodemailer = require('nodemailer');
+//var crypto = require('crypto');
 const path = require('path');
 const session = require('express-session');
 const passport = require('passport')
@@ -24,7 +25,9 @@ const User = mongoose.model(
     new Schema({
       username: { type: String, required: true },
       password: { type: String, required: true },
-      signupDate: { type: Date, required: true }
+      signupDate: { type: Date, required: true },
+      resetPasswordToken: String,
+    resetPasswordExpires: Date
     })
   );
 
