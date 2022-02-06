@@ -3,19 +3,16 @@ const cors = require('cors');
 const bodyparser = require('body-parser')
 //var nodemailer = require('nodemailer');
 //var crypto = require('crypto');
-const path = require('path');
 const session = require('express-session');
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
-const res = require('express/lib/response');
 const Schema = mongoose.Schema;
 
 require('dotenv').config();
 
 const mongoDb = process.env.MDB;
-
 mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
@@ -27,7 +24,7 @@ const User = mongoose.model(
       password: { type: String, required: true },
       signupDate: { type: Date, required: true },
       resetPasswordToken: String,
-    resetPasswordExpires: Date
+      resetPasswordExpires: Date
     })
   );
 
@@ -36,14 +33,7 @@ app.use(cors());
 app.use(bodyparser.urlencoded({extended:false}))
 app.use(bodyparser.json())
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }))
-/*app.use(function (req, res, next) {
-    //Enabling CORS
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization");
-      next();
-    });
-*/
+
 passport.use(
     new LocalStrategy((username, password, done) => {
         console.log('testlogin');
@@ -117,21 +107,16 @@ app.post('/signup', async(req, res, next) => {
             });
         console.log('testuser', user);
         const response = 'signup success';
-        console.log('responsesign', response)
-                res.send(response);
+        res.send(response);
         }
-    } )
+    })
 })
 
 app.post('/login', 
-   passport.authenticate('local', {
-       
-   }), (req, res) => {
+passport.authenticate('local', { }), (req, res) => {
     const response = 'login success';
-    console.log('responselogin', response)
     res.send(response);
-/*not able to either receive or print this message*/ }
-    );
+ });
 
 app.post('/change-password', async (req, res, next) => {
     console.log('changePW', req.body.username, req.body.password)
@@ -143,18 +128,16 @@ app.post('/change-password', async (req, res, next) => {
         }
         else{
             console.log(hashedPassword)
-          User.findOneAndUpdate({ username: req.body.username}, {$set: {password: hashedPassword}}, function (err, user){
-
+            User.findOneAndUpdate({ username: req.body.username}, {$set: {password: hashedPassword}}, function (err, user){
             if (err) {
               return err;
             } 
-           
             console.log('changepw after hash');
             res.send('password updated');
-        });
+            });
         
-        }
-    } )
+            }
+    })
 })
 
 const PORT = process.env.PORT || 7890;
