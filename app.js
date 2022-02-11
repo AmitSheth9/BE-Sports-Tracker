@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const bodyparser = require('body-parser')
 //var nodemailer = require('nodemailer');
 //var crypto = require('crypto');
 const session = require('express-session');
@@ -9,8 +8,11 @@ const LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+//require('dotenv').config();
 
-require('dotenv').config();
+const ONE_DAY = 1000 * 60 * 60 * 24;
 
 const mongoDb = process.env.MDB;
 mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
@@ -29,9 +31,9 @@ const User = mongoose.model(
   );
 
 const app = express();
-app.use(cors());
-app.use(bodyparser.urlencoded({extended:false}))
-app.use(bodyparser.json())
+app.use(cors({ origin:true, credentials:true }))
+app.use(express.json());
+app.use(cookieParser());
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }))
 
 passport.use(
@@ -75,7 +77,7 @@ passport.deserializeUser(function(id, done) {
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors());
+//app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 app.use(function(req, res, next) {
@@ -88,7 +90,6 @@ app.use('/betdata', require ('./lib/controllers/betdata'))
 app.post('/signup', async(req, res, next) => {
     console.log('test signup')
     bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
-        console.log(req.body);
         if(err) {
             console.log(err);
             return next(err)
@@ -101,21 +102,27 @@ app.post('/signup', async(req, res, next) => {
             }).save(err => {
                 if(err) {
                     return next(err);
-                    console.log('testerror', err)
                 }
-                
             });
-        console.log('testuser', user);
-        const response = 'signup success';
-        res.send(response);
+            req.user = user;
+        res.send('Signup succesful');
         }
     })
 })
 
 app.post('/login', 
-passport.authenticate('local', { }), (req, res) => {
-    const response = 'login success';
-    res.send(response);
+passport.authenticate('local', { }), async (req, res) => {
+    console.log('req.user', req.user);
+    const user = req.user;
+    console.log(user);
+    const sessionToken = await jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1 day' });
+    console.log('sessiontoken', sessionToken);
+    res
+        .cookie('session', sessionToken, {
+        httpOnly: true,
+        maxAge: ONE_DAY,
+    })
+        .send('login success');
  });
 
 app.post('/change-password', async (req, res, next) => {
