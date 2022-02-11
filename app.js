@@ -114,14 +114,14 @@ passport.authenticate('local', { }), async (req, res) => {
     console.log('req.user', req.user);
     const user = req.user;
     console.log(user);
-    const sessionToken = await jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1 day' });
+    /*const sessionToken = await jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1 day' });
     console.log('sessiontoken', sessionToken);
     res
         .cookie('session', sessionToken, {
         httpOnly: true,
         maxAge: ONE_DAY,
-    })
-        .send('login success');
+    })*/
+        res.send('login success');
  });
 
 app.post('/change-password', async (req, res, next) => {
