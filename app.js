@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-//require('dotenv').config();
+require('dotenv').config();
 
 const ONE_DAY = 1000 * 60 * 60 * 24;
 
@@ -78,7 +78,6 @@ passport.deserializeUser(function(id, done) {
 app.use(passport.initialize());
 app.use(passport.session());
 //app.use(cors());
-app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 app.use(function(req, res, next) {
     res.locals.currentUser = req.user;
