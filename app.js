@@ -31,7 +31,7 @@ const User = mongoose.model(
   );
 
 const app = express();
-app.use(cors({ origin:true, credentials:true }))
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }))
