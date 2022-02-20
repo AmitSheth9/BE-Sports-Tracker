@@ -153,7 +153,7 @@ app.post('/change-password', async (req, res, next) => {
     })
 })
 
-app.delete('/login', async (req, res) => {
+app.get('/logout', async (req, res) => {
     res.clearCookie('sessionbt');
     res.json({ success: true, message: 'Signed Out Succesfully' });
   });
