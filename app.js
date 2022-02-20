@@ -11,6 +11,7 @@ const Schema = mongoose.Schema;
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
+const authenticate = require('./lib/middleware/authenticate');
 
 const ONE_DAY = 1000 * 60 * 60 * 24;
 
@@ -31,9 +32,16 @@ const User = mongoose.model(
   );
 
 const app = express();
-app.use(cors());
+
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+    cors({
+      credentials: true,
+      origin: ['http://localhost:3000', 'https://bettracker.netlify.app'],
+      exposedHeaders: ['set-cookie'],
+    })
+  );
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }))
 
 passport.use(
@@ -111,17 +119,15 @@ app.post('/signup', async(req, res, next) => {
 
 app.post('/login', 
 passport.authenticate('local', { }), async (req, res) => {
-    console.log('req.user', req.user);
     const user = req.user;
-    console.log(user);
-    /*const sessionToken = await jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1 day' });
-    console.log('sessiontoken', sessionToken);
-    res
-        .cookie('session', sessionToken, {
+    const sessionToken = await jwt.sign({ username: req.body.username }, process.env.JWT_SECRET, { expiresIn: '1 day' });
+    
+    res.cookie('sessionbt', sessionToken, {
         httpOnly: true,
         maxAge: ONE_DAY,
-    })*/
-        res.send('login success');
+    });
+        console.log(req.cookies);
+        res.send(sessionToken);
  });
 
 app.post('/change-password', async (req, res, next) => {
@@ -146,10 +152,15 @@ app.post('/change-password', async (req, res, next) => {
     })
 })
 
-const PORT = process.env.PORT || 7890;
-
-app.listen(PORT, () => console.log("app listening on port 7890!"));
-
-
+app.delete('/login', async (req, res) => {
+    res.clearCookie('sessionbt');
+    res.json({ success: true, message: 'Signed Out Succesfully' });
+  });
+  const API_URL = process.env.API_URL || 'http://localhost';
+  const PORT = process.env.PORT || 7890;
+  
+  app.listen(PORT, () => {
+    console.log(`🚀  Server started on ${API_URL}:${PORT}`);
+  });
 
 module.exports = app;
