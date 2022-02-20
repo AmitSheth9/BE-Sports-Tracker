@@ -42,6 +42,7 @@ app.use(
       exposedHeaders: ['set-cookie'],
     })
   );
+app.options('*', cors())
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }))
 
 passport.use(
