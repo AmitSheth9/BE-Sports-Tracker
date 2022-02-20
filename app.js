@@ -33,16 +33,21 @@ const User = mongoose.model(
 
 const app = express();
 
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(
     cors({
       credentials: true,
-      origin: ['http://localhost:3000', 'https://bettracker.netlify.app'],
+      origin: ['https://bettracker.netlify.app','http://localhost:3000'],
       exposedHeaders: ['set-cookie'],
     })
   );
-app.options('*', cors())
+app.options('*', cors({
+    credentials: true,
+    origin: ['https://bettracker.netlify.app','http://localhost:3000'],
+    exposedHeaders: ['set-cookie'],
+  }));
 app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }))
 
 passport.use(
