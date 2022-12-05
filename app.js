@@ -12,11 +12,14 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const authenticate = require('./lib/middleware/authenticate');
+const path = require('path');
 
 const ONE_DAY = 1000 * 60 * 60 * 24;
-
-const mongoDb = process.env.MDB;
-mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
+//test github
+console.log('env', process.env.test);
+const mongoDb = "mongodb+srv://bettrack:bettracker@cluster0.pe98c.mongodb.net/sportstracker?retryWrites=true&w=majority"
+console.log(process.env.URI);
+mongoose.connect(process.env.MDB, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
 
@@ -33,7 +36,7 @@ const User = mongoose.model(
 
 const app = express();
 
-
+app.use(express.static(path.join(__dirname, 'client/build')))
 app.use(express.json());
 app.use(cookieParser());
 app.use(
