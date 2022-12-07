@@ -13,6 +13,7 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const authenticate = require('./lib/middleware/authenticate');
 const path = require('path');
+const IP = require('ip')
 
 const ONE_DAY = 1000 * 60 * 60 * 24;
 //test github
@@ -167,9 +168,10 @@ app.get('/logout', async (req, res) => {
   });
   const API_URL = process.env.API_URL || 'http://localhost';
   const PORT = process.env.PORT || 7890;
+  const ipAddress = IP.address();
   
   app.listen(PORT, () => {
-    console.log(`🚀  Server started on ${API_URL}:${PORT}`);
+    console.log(`🚀  Server started on ${API_URL}:${PORT}, ip address is ${ipAddress}`);
   });
 
 module.exports = app;
