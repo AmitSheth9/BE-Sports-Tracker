@@ -19,7 +19,7 @@ const ONE_DAY = 1000 * 60 * 60 * 24;
 //test github
 console.log('env', process.env.test);
 const mongoDb = "mongodb+srv://bettrack:bettracker@cluster0.pe98c.mongodb.net/sportstracker?retryWrites=true&w=majority"
-console.log(process.env.URI);
+//console.log(process.env.URI);
 mongoose.connect(process.env.MDB, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
@@ -49,6 +49,7 @@ app.use(
   );
 app.options('*', cors({
     credentials: true,
+    
     origin: ['https://bettracker.netlify.app','http://localhost:3000'],
     exposedHeaders: ['set-cookie'],
   }));
@@ -167,11 +168,11 @@ app.get('/logout', async (req, res) => {
     res.json({ success: true, message: 'Signed Out Succesfully' });
   });
   const API_URL = process.env.API_URL || 'http://localhost';
-  const PORT = process.env.PORT || 7890;
+  const PORT = process.env.PORT || 443;
   const ipAddress = IP.address();
   
   app.listen(PORT, () => {
-    console.log(`🚀  Server started on ${API_URL}:${PORT}, ip address is ${ipAddress}`);
+    console.log(`🚀  Server started on ${API_URL}:${PORT}, ip address is ${ipAddress}, and port is this.address().port`);
   });
 
 module.exports = app;
