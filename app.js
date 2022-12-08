@@ -168,7 +168,7 @@ app.get('/logout', async (req, res) => {
     res.json({ success: true, message: 'Signed Out Succesfully' });
   });
   const API_URL = process.env.API_URL || 'http://localhost';
-  const PORT = process.env.PORT || 443;
+  const PORT = process.env.PORT || 7890;
   const ipAddress = IP.address();
   
   app.listen(PORT, () => {
